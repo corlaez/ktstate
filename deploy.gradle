@@ -1,0 +1,48 @@
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+ext {
+    groupId = 'com.corlaez'
+    artifactId = "ktstate"
+    libVersion = "0.0.1"
+}
+version = libVersion
+group = groupId
+bintray {
+    user = 'corlaez'
+    key = System.getenv('BINTRAY_KEY')
+    configurations = ['archives']
+    publish = true
+    pkg {
+        repo = "maven"
+        name = "ktstate"
+        version {
+            name = libVersion
+        }
+    }
+}
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging 'jar'
+            groupId groupId
+            artifactId artifactId
+            version libVersion
+            name artifactId
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.kotlin.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
