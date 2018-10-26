@@ -2,6 +2,7 @@ package com.corlaez.ktstate.simple
 
 import com.corlaez.ktstate.InvalidInitialStateException
 import com.corlaez.ktstate.InvalidTransitionException
+import com.corlaez.ktstate.StateDef
 import com.corlaez.ktstate.UnreachableStateException
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldBe
@@ -26,10 +27,10 @@ class SimpleMachineTest : StringSpec() {
                 SimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to SimpleStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("B"))
                                 ),
-                                SimpleState("B") to SimpleStateDef(
+                                SimpleState("B") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("C"))
                                 )
                         )
@@ -41,7 +42,7 @@ class SimpleMachineTest : StringSpec() {
                 SimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to SimpleStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("C"))
                                 )
                         )
@@ -53,10 +54,10 @@ class SimpleMachineTest : StringSpec() {
                 SimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to SimpleStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("A"))
                                 ),
-                                SimpleState("C") to SimpleStateDef(
+                                SimpleState("C") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("A"))
                                 )
                         )
@@ -68,10 +69,10 @@ class SimpleMachineTest : StringSpec() {
                 SimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to SimpleStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("A"))
                                 ),
-                                SimpleState("C") to SimpleStateDef(
+                                SimpleState("C") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("C"))
                                 )
                         )
@@ -82,7 +83,7 @@ class SimpleMachineTest : StringSpec() {
             SimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to SimpleStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget(null))
                             )
                     )
@@ -93,10 +94,10 @@ class SimpleMachineTest : StringSpec() {
             val machine = SimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to SimpleStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget("B"))
                             ),
-                            SimpleState("B") to SimpleStateDef()
+                            SimpleState("B") to StateDef.Simple()
                     )
             )
             val initial = machine.initialState
@@ -106,10 +107,10 @@ class SimpleMachineTest : StringSpec() {
             val machine = SimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to SimpleStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget("B"))
                             ),
-                            SimpleState("B") to SimpleStateDef()
+                            SimpleState("B") to StateDef.Simple()
                     )
             )
             val initial = machine.initialState

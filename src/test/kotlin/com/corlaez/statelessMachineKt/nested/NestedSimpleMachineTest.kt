@@ -2,6 +2,7 @@ package com.corlaez.ktstate.nested
 
 import com.corlaez.ktstate.InvalidInitialStateException
 import com.corlaez.ktstate.InvalidTransitionException
+import com.corlaez.ktstate.StateDef
 import com.corlaez.ktstate.UnreachableStateException
 import com.corlaez.ktstate.simple.Event
 import com.corlaez.ktstate.simple.EventTarget
@@ -34,10 +35,10 @@ class NestedSimpleMachineTest : StringSpec() {
                 NestedSimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to NestedStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("B"))
                                 ),
-                                SimpleState("B") to NestedStateDef(
+                                SimpleState("B") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("C"))
                                 )
                         )
@@ -49,7 +50,7 @@ class NestedSimpleMachineTest : StringSpec() {
                 NestedSimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to NestedStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("C"))
                                 )
                         )
@@ -61,10 +62,10 @@ class NestedSimpleMachineTest : StringSpec() {
                 NestedSimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to NestedStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("A"))
                                 ),
-                                SimpleState("C") to NestedStateDef(
+                                SimpleState("C") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("A"))
                                 )
                         )
@@ -76,10 +77,10 @@ class NestedSimpleMachineTest : StringSpec() {
                 NestedSimpleMachine(
                         SimpleState("A"),
                         mapOf(
-                                SimpleState("A") to NestedStateDef(
+                                SimpleState("A") to StateDef.Simple(
                                         mapOf(Event("x") to EventTarget("A"))
                                 ),
-                                SimpleState("C") to NestedStateDef(
+                                SimpleState("C") to StateDef.Simple(
                                         mapOf(Event("y") to EventTarget("C"))
                                 )
                         )
@@ -90,7 +91,7 @@ class NestedSimpleMachineTest : StringSpec() {
             NestedSimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to NestedStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget(null))
                             )
                     )
@@ -101,10 +102,10 @@ class NestedSimpleMachineTest : StringSpec() {
             val machine = NestedSimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to NestedStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget("B"))
                             ),
-                            SimpleState("B") to NestedStateDef()
+                            SimpleState("B") to StateDef.Simple()
                     )
             )
             val initial = machine.initialState
@@ -114,10 +115,10 @@ class NestedSimpleMachineTest : StringSpec() {
             val machine = NestedSimpleMachine(
                     SimpleState("A"),
                     mapOf(
-                            SimpleState("A") to NestedStateDef(
+                            SimpleState("A") to StateDef.Simple(
                                     mapOf(Event("x") to EventTarget("B"))
                             ),
-                            SimpleState("B") to NestedStateDef()
+                            SimpleState("B") to StateDef.Simple()
                     )
             )
             val initial = machine.initialState
@@ -126,6 +127,30 @@ class NestedSimpleMachineTest : StringSpec() {
     }
 
     private fun nestedTests() {
-
+        "Should allow progressing state" {
+            val machine = NestedSimpleMachine(
+                    SimpleState("A"),
+                    states = mapOf(
+                            SimpleState("A") to StateDef.Simple(
+                                    mapOf(Event("x") to EventTarget("B"))
+                            ),
+                            SimpleState("B") to StateDef.Nested(
+                                    machine = NestedSimpleMachine(
+                                            SimpleState("X"),
+                                            mapOf(
+                                                    SimpleState("X") to StateDef.Simple(
+                                                            mapOf(Event("y") to EventTarget("Z"))
+                                                    ),
+                                                    SimpleState("Z") to StateDef.Simple()
+                                            )
+                                    )
+                            )
+                    )
+            )
+            val initial = machine.initialState
+            val nextState = machine.nextState(initial, Event("x"))
+            nextState shouldBe NestedState(SimpleState("B"), SimpleState("X"))
+            //machine.nextState(nextState, Event("y")) shouldBe SimpleState("Z")
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.corlaez.ktstate.nested
+/*package com.corlaez.ktstate.nested
 
 import com.corlaez.ktstate.InvalidStateException
 import com.corlaez.ktstate.Machine
@@ -8,9 +8,9 @@ import com.corlaez.ktstate.simple.EventTarget
 
 /** A state that also holds a machine */
 data class NestedStateDef (
-        val transitions: Map<Event, EventTarget> = emptyMap(),
+        override val transitions: Map<Event, EventTarget> = emptyMap(),
         val machine: Machine
-) : StateDef {
+) : StateDef() {
 
     init {
         if(machine is NestedMachine) {
@@ -19,4 +19,4 @@ data class NestedStateDef (
     }
 
     val isTerminal get() = transitions.values.all{ !it.hasTarget }
-}
+}*/

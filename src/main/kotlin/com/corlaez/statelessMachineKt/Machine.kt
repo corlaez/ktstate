@@ -2,7 +2,7 @@ package com.corlaez.ktstate
 
 import com.corlaez.ktstate.simple.Event
 
-open abstract class Machine {
+abstract class Machine {
     // Parallel machines override the name with the corresponding keys
     var name: String = "Unnamed"
 

@@ -1,5 +1,6 @@
 package com.corlaez.ktstate.parallel
 
+import com.corlaez.ktstate.StateDef
 import com.corlaez.ktstate.simple.*
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldBe
@@ -15,10 +16,10 @@ class ParallelMachineTest : StringSpec() {
                     "First" to SimpleMachine(
                             SimpleState("A"),
                             mapOf(
-                                    SimpleState("A") to SimpleStateDef(
+                                    SimpleState("A") to StateDef.Simple(
                                             mapOf(Event("x") to EventTarget("B"))
                                     ),
-                                    SimpleState("B") to SimpleStateDef()
+                                    SimpleState("B") to StateDef.Simple()
                             )
                     )
             ))
@@ -32,28 +33,28 @@ class ParallelMachineTest : StringSpec() {
                     "1" to SimpleMachine(
                             SimpleState("A"),
                             mapOf(
-                                    SimpleState("A") to SimpleStateDef(
+                                    SimpleState("A") to StateDef.Simple(
                                             mapOf(Event("x") to EventTarget("B"))
                                     ),
-                                    SimpleState("B") to SimpleStateDef()
+                                    SimpleState("B") to StateDef.Simple()
                             )
                     ),
                     "2" to SimpleMachine(
                             SimpleState("C"),
                             mapOf(
-                                    SimpleState("C") to SimpleStateDef(
+                                    SimpleState("C") to StateDef.Simple(
                                             mapOf(Event("x") to EventTarget("D"))
                                     ),
-                                    SimpleState("D") to SimpleStateDef()
+                                    SimpleState("D") to StateDef.Simple()
                             )
                     ),
                     "3" to SimpleMachine(
                             SimpleState("E"),
                             mapOf(
-                                    SimpleState("E") to SimpleStateDef(
+                                    SimpleState("E") to StateDef.Simple(
                                             mapOf(Event("y") to EventTarget("F"))
                                     ),
-                                    SimpleState("F") to SimpleStateDef()
+                                    SimpleState("F") to StateDef.Simple()
                             )
                     )
             ))
@@ -72,10 +73,10 @@ class ParallelMachineTest : StringSpec() {
                     "First" to SimpleMachine(
                             SimpleState("A"),
                             mapOf(
-                                    SimpleState("A") to SimpleStateDef(
+                                    SimpleState("A") to StateDef.Simple(
                                             mapOf(Event("x") to EventTarget("B"))
                                     ),
-                                    SimpleState("B") to SimpleStateDef()
+                                    SimpleState("B") to StateDef.Simple()
                             )
                     )
             ))

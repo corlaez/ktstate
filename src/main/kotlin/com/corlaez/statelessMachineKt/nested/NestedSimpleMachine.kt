@@ -6,7 +6,7 @@ import com.corlaez.ktstate.simple.SimpleState
 
 data class NestedSimpleMachine(
         val initialState: SimpleState,
-        val states: Map<SimpleState, NestedStateDef>
+        val states: Map<SimpleState, StateDef>
 ): Machine() {
     init {
         validate()
@@ -26,12 +26,11 @@ data class NestedSimpleMachine(
         }
     }
 
-    private fun validateTransitions(state: SimpleState, stateInfo: NestedStateDef) {
-            // If one of the transitions values is not a stateInfo key we throw
-            stateInfo.transitions.forEach{ it ->
-                if(it.value.hasTarget && !stateNames.contains(it.value.target))
-                    throw InvalidTransitionException("$name simpleMachine, $state stateInfo, $it is not valid")
-            }
+    private fun validateTransitions(state: SimpleState, stateInfo: StateDef) {
+        stateInfo.transitions.forEach{ it ->
+            if(it.value.hasTarget && !stateNames.contains(it.value.target))
+                throw InvalidTransitionException("$name simpleMachine, $state stateInfo, $it is not valid")
+        }
     }
 
     private fun validateStateIsReachable(state: SimpleState) {
@@ -47,7 +46,31 @@ data class NestedSimpleMachine(
 
     /** Provide current state and a event to return the next state. Null means no change. */
     override fun nextState(state: State, event: Event): State {
-        val stateInfo = states[state] ?: throw InvalidStateException("$name simpleMachine, state $state does not exist.")
-        return stateInfo.transitions[event]?.target ?: state
+        return when (state) {
+            is SimpleState -> {
+                val stateInfo = states[state]!!
+                val targetState = stateInfo.transitions[event]?.target ?: return state
+                val targetStateInfo = states[targetState] as Neste!!
+                when (targetStateInfo) {
+                    is StateDef.Simple -> {
+                        return stateInfo.transitions[event]?.target ?: state
+                    }
+                    is StateDef.Nested -> {
+                        val nextState = targetStateInfo.machine.nextState(state, event)
+                        return NestedState(
+                                externalState = targetState,
+                                internalState = nextState
+                        )
+                    }
+                }
+            }
+            is NestedState -> {throw Exception()
+                val stateInfoKey = state.externalState
+                val stateInfo = states[stateInfoKey] as StateDef.Nested
+                stateInfo.machine.nextState(state.internalState, event)
+                return stateInfo.transitions[event]?.target ?: state
+            }
+            else -> throw Exception()
+        }
     }
 }

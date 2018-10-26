@@ -4,7 +4,7 @@ import com.corlaez.ktstate.*
 
 data class SimpleMachine(
         val initialState: SimpleState,
-        val states: Map<SimpleState, SimpleStateDef>
+        val states: Map<SimpleState, StateDef.Simple>
 ): Machine() {
     init {
         validate()
@@ -24,7 +24,7 @@ data class SimpleMachine(
         }
     }
 
-    private fun validateTransitions(state: SimpleState, stateInfo: SimpleStateDef) {
+    private fun validateTransitions(state: SimpleState, stateInfo: StateDef.Simple) {
             // If one of the transitions values is not a stateInfo key we throw
             stateInfo.transitions.forEach{ it ->
                 if(it.value.hasTarget && !stateNames.contains(it.value.target))

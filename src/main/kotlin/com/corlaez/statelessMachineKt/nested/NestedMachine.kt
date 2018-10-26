@@ -6,7 +6,7 @@ import com.corlaez.ktstate.simple.SimpleState
 
 data class NestedMachine(
         val initialState: String,
-        val states: Map<SimpleState, NestedStateDef>,
+        val states: Map<SimpleState, StateDef.Nested>,
         private var parent: Machine?
 ): Machine() {
     init {
@@ -31,7 +31,7 @@ data class NestedMachine(
         }
     }
 
-    private fun validateTransitions(state: SimpleState, stateDef: NestedStateDef) {
+    private fun validateTransitions(state: SimpleState, stateDef: StateDef.Nested) {
             // If one of the transitions values is not a stateDef key we throw
             stateDef.transitions.forEach{ it ->
                 if(it.value.hasTarget && !stateNames.contains(it.value.target))
@@ -52,7 +52,7 @@ data class NestedMachine(
 
     /** Provide current state and a event to return the next state. Null means no change. */
     override fun nextState(state: State, event: Event): State {
-        val stateInfo = states[state] ?: throw InvalidStateException("$name simpleMachine, state $state does not exist.")
+        val stateInfo = states[state] ?: throw InvalidStateException("$name nested machine, state $state does not exist.")
         return stateInfo.transitions[event]?.target ?: parent?.nextState(state, event) ?: state
     }// augment state if machine is present. TODO: xD
 }
